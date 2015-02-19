@@ -1221,9 +1221,13 @@ public abstract class AbstractUserStoreManager implements UserStoreManager {
 		try {
 			roleList = UserCoreUtil
 					.combine(doGetInternalRoleListOfUser(userName, "*"), Arrays.asList(roleList));
-			addToUserRolesCache(tenantId, UserCoreUtil.addDomainToName(userName, getMyDomainName()),
-			                    roleList);
-		} catch (Exception e) {
+
+            // Remove duplicated roles
+            roleList = new HashSet<String>(Arrays.asList(roleList)).toArray(new String[0]);
+
+            addToUserRolesCache(tenantId, UserCoreUtil.addDomainToName(userName, getMyDomainName()),
+                    roleList);
+        } catch (Exception e) {
 			//if adding newly created user's roles to the user roles cache fails, do nothing. It will read 
 			//from the database upon updating user.
 		}
